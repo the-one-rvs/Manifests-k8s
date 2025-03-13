@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devsecops-app
+  labels:
+    app: devsecops
+  annotations:
+    keel.sh/policy: "minor"           # Changed from "semver" to "minor"
+    keel.sh/trigger: "poll"
+    keel.sh/pollSchedule: "@every 30s"
+    keel.sh/match-tag: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devsecops
+  template:
+    metadata:
+      labels:
+        app: devsecops
+    spec:
+      containers:
+        - name: devsecops-container
+          image: "quasarcelestio/devsecops:0.1.17"  # Auto tag
+          imagePullPolicy: Always  # Hamesha naye image ke liye pull karega
+          ports:
+            - containerPort: 3000
